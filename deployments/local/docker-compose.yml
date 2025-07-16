@@ -1,0 +1,25 @@
+services:
+  postgres-db:
+    image: postgres:17.5
+    container_name: postgres-db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=developer
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  
+  hotel-service:
+    image: .
+    container_name: hotel-service
+    restart: always
+    depends_on:
+      - postgres-db
+    ports:
+      - 8000:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=developer@google.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
