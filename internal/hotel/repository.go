@@ -2,6 +2,7 @@ package hotel
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/uptrace/bun"
@@ -25,7 +26,7 @@ func (r *HotelRepository) Save(hotel *Hotel) error {
 	return nil
 }
 
-func (r *HotelRepository) UpdateHotel(hotel *Hotel) error {
+func (r *HotelRepository) Update(hotel *Hotel) error {
 	_, err := r.db.NewUpdate().Model(hotel).Where("id = ?", hotel.ID).Exec(context.Background())
 	if err != nil {
 		return err
@@ -33,7 +34,7 @@ func (r *HotelRepository) UpdateHotel(hotel *Hotel) error {
 	return nil
 }
 
-func (r *HotelRepository) DeleteHotel(id string) error {
+func (r *HotelRepository) Delete(id string) error {
 	_, err := r.db.NewDelete().Model((*Hotel)(nil)).Where("id = ?", id).Exec(context.Background())
 	if err != nil {
 		return err
@@ -41,7 +42,7 @@ func (r *HotelRepository) DeleteHotel(id string) error {
 	return nil
 }
 
-func (r *HotelRepository) GetAllHotels() (Hotels, error) {
+func (r *HotelRepository) GetAll() (Hotels, error) {
 	var hotels Hotels
 	err := r.db.NewSelect().Model(&hotels).Scan(context.Background())
 	if err != nil {
@@ -50,9 +51,12 @@ func (r *HotelRepository) GetAllHotels() (Hotels, error) {
 	return hotels, nil
 }
 
-func (r *HotelRepository) GetHotelByID(id uuid.UUID) (*Hotel, error) {
+func (r *HotelRepository) GetByID(id uuid.UUID) (*Hotel, error) {
 	var hotel Hotel
 	err := r.db.NewSelect().Model(&hotel).Where("id = ?", id).Scan(context.Background())
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}

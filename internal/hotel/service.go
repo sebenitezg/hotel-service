@@ -25,7 +25,7 @@ func NewService(
 func (s *HotelService) ListHotels() (Hotels, error) {
 	s.log.Infof("fetching all hotels")
 
-	hotels, err := s.hotelRepo.GetAllHotels()
+	hotels, err := s.hotelRepo.GetAll()
 	if err != nil {
 		s.log.Errorw("error getting hotels information", "error", err)
 		return Hotels{}, err
@@ -37,7 +37,7 @@ func (s *HotelService) ListHotels() (Hotels, error) {
 func (s *HotelService) GetHotelByID(id uuid.UUID) (*Hotel, error) {
 	s.log.Infof("fetching hotel by id: %s", id)
 
-	hotel, err := s.hotelRepo.GetHotelByID(id)
+	hotel, err := s.hotelRepo.GetByID(id)
 	if err != nil {
 		return nil, errors.New("unexpected error fetching hotel")
 	}
@@ -65,7 +65,7 @@ func (s *HotelService) UpdatePartiallyHotel(
 ) (*Hotel, error) {
 	s.log.Infof("updating hotel instance with id: %v", id)
 
-	hotel, err := s.hotelRepo.GetHotelByID(id)
+	hotel, err := s.hotelRepo.GetByID(id)
 	if err != nil {
 		return nil, nil
 	}
@@ -85,11 +85,19 @@ func (s *HotelService) UpdatePartiallyHotel(
 		hotel.Status = *status
 	}
 
-	if err := s.hotelRepo.UpdateHotel(hotel); err != nil {
+	if err := s.hotelRepo.Update(hotel); err != nil {
 		s.log.Errorf("failed updating hotel information", "error", err)
 		return nil, err
 	}
 
 	s.log.Infow("updated hotel information successfully", "hotel_id", hotel.ID)
 	return hotel, nil
+}
+
+func (s *HotelService) ValidateHotelExists(hotelID uuid.UUID) (bool, error) {
+	hotel, err := s.hotelRepo.GetByID(hotelID)
+	if err != nil {
+		return false, err
+	}
+	return hotel != nil, nil
 }

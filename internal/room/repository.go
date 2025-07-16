@@ -2,6 +2,7 @@ package room
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/uptrace/bun"
@@ -53,6 +54,9 @@ func (r *RoomRepository) GetAll() ([]Room, error) {
 func (r *RoomRepository) GetByID(id uuid.UUID) (*Room, error) {
 	var room Room
 	err := r.db.NewSelect().Model(&room).Where("id = ?", id).Scan(context.Background())
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +76,7 @@ func (r *RoomRepository) GetByHotelID(hotelID uuid.UUID) (Rooms, error) {
 	var rooms Rooms
 	err := r.db.NewSelect().
 		Model(&rooms).
-		// Where("hotel_id = ?", hotelID).
+		Where("hotel_id = ?", hotelID).
 		Scan(context.Background())
 	if err != nil {
 		return nil, err

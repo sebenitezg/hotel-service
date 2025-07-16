@@ -40,7 +40,7 @@ func main() {
 
 	// Setup Services
 	hotelService := hotel.NewService(hotelRepository)
-	roomService := room.NewService(roomRepository)
+	roomService := room.NewService(roomRepository, hotelService)
 
 	// Initialize Controllers
 	hotel.NewController(httpServer, validatorInstance, hotelService)

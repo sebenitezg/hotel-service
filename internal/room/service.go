@@ -2,23 +2,26 @@ package room
 
 import (
 	"errors"
+	"hotel-service/internal/core"
 	"hotel-service/pkg/logger"
 
-	// "hotel-service/internal/hotel"
 	"github.com/gofrs/uuid/v5"
 	"go.uber.org/zap"
 )
 
 type RoomService struct {
-	roomRepo *RoomRepository
-	log      *zap.SugaredLogger
+	roomRepo       *RoomRepository
+	hotelValidator core.HotelValidator
+	log            *zap.SugaredLogger
 }
 
 func NewService(
 	roomRepo *RoomRepository,
+	hotelValidator core.HotelValidator,
 ) *RoomService {
 	return &RoomService{
 		roomRepo: roomRepo,
+		hotelValidator: hotelValidator,
 		log:      logger.GetLogger(),
 	}
 }
@@ -52,8 +55,18 @@ func (s *RoomService) RetrieveRoomByHotelRoomID(
 }
 
 func (s *RoomService) CreateRoom(r *Room) (*Room, error) {
-	err := s.roomRepo.Save(r)
+
+	hotelExist, err := s.hotelValidator.ValidateHotelExists(r.HotelID)
 	if err != nil {
+		s.log.Errorw("error validating hotel existence", "hotelID", r.HotelID, "error", err)
+		return nil, err
+	}
+	if !hotelExist {
+		s.log.Errorw("hotel does not exist", "hotelID", r.HotelID)
+		return nil, errors.New("hotel does not exist")
+	}
+
+	if err := s.roomRepo.Save(r); err != nil {
 		s.log.Errorw("error creating new room", "error", err)
 		return nil, err
 	}
