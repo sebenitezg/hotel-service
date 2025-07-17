@@ -5,9 +5,9 @@ server:
 
 database:
   host: localhost
-  port: 5432
-  db-name: postgres?sslmode=disable
+  port: 5431
+  db-name: hotel_service?sslmode=disable
   user: developer
-  password: 123456
+  password: secretpassword
   pool-size: 2
   log-queries: true

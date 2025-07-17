@@ -8,6 +8,8 @@ default: help
 help:
     just --list --justfile {{justfile()}}
 
+init:
+    -cp --no-clobber resources/config.yaml.example resources/config.yaml
 
 ##########
 # Go
@@ -51,7 +53,16 @@ main_db_migrations := "resources/db/migrations"
 main_db_schema := "resources/db/schema.sql"
 
 db action:
-    dbmate -u postgres://developer:123456@localhost:5432/postgres?sslmode=disable -d {{main_db_migrations}} -s {{main_db_schema}} {{action}}
+    dbmate -u postgres://developer:secretpassword@localhost:5431/hotel_service?sslmode=disable -d {{main_db_migrations}} -s {{main_db_schema}} {{action}}
 
 new-migration name:
     dbmate -d {{ main_db_migrations }} new {{ name }}
+
+
+##########################
+# Infrastructure setup
+##########################
+db-setup:
+    chmod u+x deployments/postgres.sh
+    ./deployments/postgres.sh
+
