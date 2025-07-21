@@ -8,6 +8,7 @@ CREATE TABLE public.hotels (
     country VARCHAR(64) NOT NULL,
     state VARCHAR(64) NOT NULL,
     status VARCHAR(64) NOT NULL,
+    description TEXT NOT NULL,
     PRIMARY KEY (id)
 )
 

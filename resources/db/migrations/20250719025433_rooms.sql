@@ -11,6 +11,7 @@ CREATE TABLE public.rooms (
     status VARCHAR(32) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (hotel_id) REFERENCES hotels(id)
+    FOREIGN KEY (room_type_id) REFERENCES room_types(id)
 )
 
 -- migrate:down
