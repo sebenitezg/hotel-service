@@ -31,11 +31,11 @@ func NewController(
 	}
 
 	server.Router.Group(func(r chi.Router) {
-		r.Get("/v1/hotels/{id}", c.handleGetHotel)
+		r.Get("/v1/hotels/{hotel_id}", c.handleGetHotel)
 		r.Get("/v1/hotels/", c.handleListHotels)
 		r.Post("/v1/hotels/", c.handleCreateHotel)
-		r.Patch("/v1/hotels/{id}", c.handlePartialUpdateHotel)
-		r.Delete("/v1/hotels/{id}", c.handleDeleteHotel)
+		r.Patch("/v1/hotels/{hotel_id}", c.handlePartialUpdateHotel)
+		r.Delete("/v1/hotels/{hotel_id}", c.handleDeleteHotel)
 	})
 
 	return c
@@ -52,7 +52,7 @@ func (c *HotelController) handleListHotels(w http.ResponseWriter, r *http.Reques
 }
 
 func (c *HotelController) handleGetHotel(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	id := chi.URLParam(r, "hotel_id")
 	uuidID, err := uuid.FromString(id)
 	if err != nil {
 		c.log.Errorw("invalid hotel id", "hotelID", id, "error", err)
@@ -89,6 +89,7 @@ func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Reque
 		payload.Country,
 		payload.State,
 		payload.Status,
+		payload.Description,
 	)
 	if err != nil {
 		c.log.Errorw("failure creating hotel model instance", "error", err)
@@ -108,7 +109,7 @@ func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Reque
 }
 
 func (c *HotelController) handlePartialUpdateHotel(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	id := chi.URLParam(r, "hotel_id")
 	uuidID, err := uuid.FromString(id)
 	if err != nil {
 		c.log.Errorw("invalid hotel id", "hotelID", id, "error", err)
@@ -122,7 +123,13 @@ func (c *HotelController) handlePartialUpdateHotel(w http.ResponseWriter, r *htt
 		rest.RenderError(r.Context(), w, err)
 	}
 
-	hotel, err := c.hotelService.UpdatePartiallyHotel(uuidID, payload.Name, payload.Address, payload.Status)
+	hotel, err := c.hotelService.UpdatePartiallyHotel(
+		uuidID,
+		payload.Name,
+		payload.Address,
+		payload.Status,
+		payload.Description,
+	)
 	if err != nil {
 		rest.RenderError(r.Context(), w, err)
 	}

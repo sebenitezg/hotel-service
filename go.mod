@@ -13,6 +13,7 @@ require (
 	github.com/knadh/koanf/providers/file v1.2.0
 	github.com/knadh/koanf/v2 v2.2.2
 	github.com/monzo/terrors v0.0.0-20250318115913-bef380b50d79
+	github.com/shopspring/decimal v1.4.0
 	github.com/uptrace/bun v1.2.14
 	github.com/uptrace/bun/dialect/pgdialect v1.2.14
 	github.com/uptrace/bun/extra/bundebug v1.2.14

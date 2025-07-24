@@ -62,6 +62,7 @@ func (s *HotelService) UpdatePartiallyHotel(
 	name *string,
 	address *string,
 	status *string,
+	description *string,
 ) (*Hotel, error) {
 	s.log.Infof("updating hotel instance with id: %v", id)
 
@@ -75,15 +76,10 @@ func (s *HotelService) UpdatePartiallyHotel(
 		return nil, ErrHotelNotFound
 	}
 
-	if name != nil {
-		hotel.Name = *name
-	}
-	if address != nil {
-		hotel.Address = *address
-	}
-	if status != nil {
-		hotel.Status = *status
-	}
+	if name != nil { hotel.Name = *name }
+	if address != nil { hotel.Address = *address }
+	if status != nil { hotel.Status = *status }
+	if description != nil { hotel.Status = *description }
 
 	if err := s.hotelRepo.Update(hotel); err != nil {
 		s.log.Errorf("failed updating hotel information", "error", err)
@@ -94,8 +90,8 @@ func (s *HotelService) UpdatePartiallyHotel(
 	return hotel, nil
 }
 
-func (s *HotelService) ValidateHotelExists(hotelID uuid.UUID) (bool, error) {
-	hotel, err := s.hotelRepo.GetByID(hotelID)
+func (s *HotelService) ValidateHotelExists(id uuid.UUID) (bool, error) {
+	hotel, err := s.hotelRepo.GetByID(id)
 	if err != nil {
 		return false, err
 	}

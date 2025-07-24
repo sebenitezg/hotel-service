@@ -10,19 +10,22 @@ import (
 )
 
 type RoomService struct {
-	roomRepo       *RoomRepository
-	hotelValidator core.HotelValidator
-	log            *zap.SugaredLogger
+	roomRepo          *RoomRepository
+	hotelValidator    core.HotelValidator
+	roomTypeValidator core.RoomTypeValidator
+	log               *zap.SugaredLogger
 }
 
 func NewService(
 	roomRepo *RoomRepository,
 	hotelValidator core.HotelValidator,
+	roomTypeValidator core.RoomTypeValidator,
 ) *RoomService {
 	return &RoomService{
-		roomRepo: roomRepo,
-		hotelValidator: hotelValidator,
-		log:      logger.GetLogger(),
+		roomRepo:          roomRepo,
+		hotelValidator:    hotelValidator,
+		roomTypeValidator: roomTypeValidator,
+		log:               logger.GetLogger(),
 	}
 }
 
@@ -64,6 +67,19 @@ func (s *RoomService) CreateRoom(r *Room) (*Room, error) {
 	if !hotelExist {
 		s.log.Errorw("hotel does not exist", "hotelID", r.HotelID)
 		return nil, errors.New("hotel does not exist")
+	}
+
+	roomTypeExist, err := s.roomTypeValidator.ValidateRoomTypeExists(r.RoomTypeID)
+	if err != nil {
+		s.log.Errorw(
+			"error validating room type existence",
+			"roomTypeID", r.RoomTypeID, "error", err,
+		)
+		return nil, err
+	}
+	if !roomTypeExist {
+		s.log.Errorw("room type does not exist", "roomTypeID", r.RoomTypeID)
+		return nil, errors.New("room type does not exist")
 	}
 
 	if err := s.roomRepo.Save(r); err != nil {

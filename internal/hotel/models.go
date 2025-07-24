@@ -20,6 +20,7 @@ type Hotel struct {
 	Country       string    `bun:"country"`
 	State         string    `bun:"state"`
 	Status        string    `bun:"status"`
+	Description   string    `bun:"description"`
 }
 
 type Hotels []Hotel
@@ -30,6 +31,7 @@ func NewHotel(
 	country string,
 	state string,
 	status string,
+	description string,
 ) (*Hotel, error) {
 	now := time.Now().UTC()
 
@@ -39,13 +41,14 @@ func NewHotel(
 	}
 
 	return &Hotel{
-		ID:        id,
-		CreatedAt: now,
-		UpdatedAt: now,
-		Name:      name,
-		Address:   address,
-		Country:   country,
-		State:     state,
-		Status:    status,
+		ID:          id,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+		Name:        name,
+		Address:     address,
+		Country:     country,
+		State:       state,
+		Status:      status,
+		Description: description,
 	}, nil
 }
