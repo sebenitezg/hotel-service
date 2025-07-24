@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	"hotel-service/config"
+	"github.com/sebenitezg/hotel-service/config"
 )
 
 // HTTPServer http server

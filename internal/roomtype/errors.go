@@ -1,6 +1,5 @@
 package roomtype
 
-
 import "errors"
 
 var (

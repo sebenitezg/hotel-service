@@ -3,9 +3,10 @@ package hotel
 import (
 	"encoding/json"
 	"errors"
-	"hotel-service/pkg/logger"
-	"hotel-service/pkg/server/rest"
 	"net/http"
+
+	"github.com/sebenitezg/hotel-service/pkg/logger"
+	"github.com/sebenitezg/hotel-service/pkg/server/rest"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"

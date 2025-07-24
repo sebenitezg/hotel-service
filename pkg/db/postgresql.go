@@ -2,9 +2,10 @@ package db
 
 import (
 	"fmt"
-	"hotel-service/config"
 	"log"
 	"time"
+
+	"github.com/sebenitezg/hotel-service/config"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"

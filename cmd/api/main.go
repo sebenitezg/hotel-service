@@ -1,13 +1,13 @@
 package main
 
 import (
-	"hotel-service/config"
-	"hotel-service/internal/hotel"
-	"hotel-service/internal/room"
-	"hotel-service/internal/roomtype"
-	"hotel-service/pkg/db"
-	"hotel-service/pkg/logger"
-	"hotel-service/pkg/server/rest"
+	"github.com/sebenitezg/hotel-service/config"
+	"github.com/sebenitezg/hotel-service/internal/hotel"
+	"github.com/sebenitezg/hotel-service/internal/room"
+	"github.com/sebenitezg/hotel-service/internal/roomtype"
+	"github.com/sebenitezg/hotel-service/pkg/db"
+	"github.com/sebenitezg/hotel-service/pkg/logger"
+	"github.com/sebenitezg/hotel-service/pkg/server/rest"
 
 	"log"
 
