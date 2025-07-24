@@ -6,9 +6,6 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
-// --------------------
-// DTOs
-// --------------------
 type CreateRoomRequest struct {
 	RoomTypeID uuid.UUID `json:"room_type_id"`
 	Floor      int       `json:"floor"`

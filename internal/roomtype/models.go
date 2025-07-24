@@ -21,22 +21,24 @@ type RoomType struct {
 	ID            uuid.UUID       `bun:"id"`
 	CreatedAt     time.Time       `bun:"created_at"`
 	UpdatedAt     time.Time       `bun:"updated_at"`
+	HotelID       uuid.UUID       `bun:"hotel_id"`
 	Name          string          `bun:"name"`
 	Description   string          `bun:"description"`
-	NumberOfBeds  string          `bun:"number_of_beds"`
+	NumberOfBeds  int             `bun:"number_of_beds"`
 	BedType       string          `bun:"bed_type"`
-	MaxOccupancy  string          `bun:"max_occupancy"`
+	MaxOccupancy  int             `bun:"max_occupancy"`
 	BasePrice     decimal.Decimal `bun:"base_price"`
 }
 
 type RoomTypes []RoomType
 
 func NewRoomType(
+	hotelID uuid.UUID,
 	name string,
 	description string,
-	numberOfBeds string,
-	bedType BedType,
-	maxOccupancy string,
+	numberOfBeds int,
+	bedType string,
+	maxOccupancy int,
 	basePrice decimal.Decimal,
 ) (*RoomType, error) {
 	now := time.Now().UTC()
@@ -50,10 +52,11 @@ func NewRoomType(
 		ID:           id,
 		CreatedAt:    now,
 		UpdatedAt:    now,
+		HotelID:      hotelID,
 		Name:         name,
 		Description:  description,
 		NumberOfBeds: numberOfBeds,
-		BedType:      string(bedType),
+		BedType:      bedType,
 		MaxOccupancy: maxOccupancy,
 		BasePrice:    basePrice,
 	}, nil

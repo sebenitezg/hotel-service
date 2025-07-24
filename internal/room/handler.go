@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type HotelController struct {
+type RoomController struct {
 	validator   *validator.Validate
 	roomService *RoomService
 	log         *zap.SugaredLogger
@@ -23,26 +23,26 @@ func NewController(
 	server *rest.HTTPServer,
 	validator *validator.Validate,
 	roomService *RoomService,
-) *HotelController {
-	c := &HotelController{
+) *RoomController {
+	c := &RoomController{
 		validator:   validator,
 		roomService: roomService,
 		log:         logger.GetLogger(),
 	}
 
 	server.Router.Group(func(r chi.Router) {
-		r.Get("/v1/hotels/{hotelID}/rooms", c.handleListHotelRooms)
-		r.Get("/v1/hotels/{hotelID}/rooms/{roomID}", c.handleGetHotelRoom)
-		r.Post("/v1/hotels/{hotelID}/rooms", c.handleCreateHotelRoom)
-		r.Put("/v1/hotels/{hotelID}/rooms/{roomID}", c.handlePartialUpdateHotelRoom)
-		r.Delete("/v1/hotels/{hotelID}/rooms/{roomID}", c.handleDeleteHotelRoom)
+		r.Get("/v1/hotels/{hotel_id}/rooms", c.handleListHotelRooms)
+		r.Get("/v1/hotels/{hotel_id}/rooms/{room_id}", c.handleGetHotelRoom)
+		r.Post("/v1/hotels/{hotel_id}/rooms", c.handleCreateHotelRoom)
+		r.Put("/v1/hotels/{hotel_id}/rooms/{room_id}", c.handlePartialUpdateHotelRoom)
+		r.Delete("/v1/hotels/{hotel_id}/rooms/{room_id}", c.handleDeleteHotelRoom)
 	})
 
 	return c
 }
 
-func (c *HotelController) handleListHotelRooms(w http.ResponseWriter, r *http.Request) {
-	hotelID := chi.URLParam(r, "hotelID")
+func (c *RoomController) handleListHotelRooms(w http.ResponseWriter, r *http.Request) {
+	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
 		c.log.Errorw("invalid hotel id", "hotelID", hotelID, "error", err)
@@ -60,8 +60,8 @@ func (c *HotelController) handleListHotelRooms(w http.ResponseWriter, r *http.Re
 	rest.RenderJSON(r.Context(), w, http.StatusOK, resp)
 }
 
-func (c *HotelController) handleGetHotelRoom(w http.ResponseWriter, r *http.Request) {
-	hotelID := chi.URLParam(r, "hotelID")
+func (c *RoomController) handleGetHotelRoom(w http.ResponseWriter, r *http.Request) {
+	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
 		c.log.Errorw("invalid hotel id", "hotelID", hotelID, "error", err)
@@ -69,7 +69,7 @@ func (c *HotelController) handleGetHotelRoom(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	roomID := chi.URLParam(r, "roomID")
+	roomID := chi.URLParam(r, "room_id")
 	uuidRoomID, err := uuid.FromString(roomID)
 	if err != nil {
 		c.log.Errorw("invalid room id", "roomID", roomID, "error", err)
@@ -86,8 +86,8 @@ func (c *HotelController) handleGetHotelRoom(w http.ResponseWriter, r *http.Requ
 	rest.RenderJSON(r.Context(), w, http.StatusCreated, resp)
 }
 
-func (c *HotelController) handleCreateHotelRoom(w http.ResponseWriter, r *http.Request) {
-	hotelID := chi.URLParam(r, "hotelID")
+func (c *RoomController) handleCreateHotelRoom(w http.ResponseWriter, r *http.Request) {
+	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
 		c.log.Errorw("invalid hotel id", "hotelID", hotelID, "error", err)
@@ -131,8 +131,8 @@ func (c *HotelController) handleCreateHotelRoom(w http.ResponseWriter, r *http.R
 	rest.RenderJSON(r.Context(), w, http.StatusCreated, resp)
 }
 
-func (c *HotelController) handlePartialUpdateHotelRoom(w http.ResponseWriter, r *http.Request) {
-	hotelID := chi.URLParam(r, "hotelID")
+func (c *RoomController) handlePartialUpdateHotelRoom(w http.ResponseWriter, r *http.Request) {
+	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
 		c.log.Errorw("invalid hotel id", "hotelID", hotelID, "error", err)
@@ -140,7 +140,7 @@ func (c *HotelController) handlePartialUpdateHotelRoom(w http.ResponseWriter, r 
 		return
 	}
 
-	roomID := chi.URLParam(r, "id")
+	roomID := chi.URLParam(r, "room_id")
 	uuidRoomID, err := uuid.FromString(roomID)
 	if err != nil {
 		c.log.Errorw("invalid room id", "romID", roomID, "error", err)
@@ -178,6 +178,6 @@ func (c *HotelController) handlePartialUpdateHotelRoom(w http.ResponseWriter, r 
 	rest.RenderJSON(r.Context(), w, http.StatusOK, resp)
 }
 
-func (c *HotelController) handleDeleteHotelRoom(w http.ResponseWriter, r *http.Request) {
+func (c *RoomController) handleDeleteHotelRoom(w http.ResponseWriter, r *http.Request) {
 
 }

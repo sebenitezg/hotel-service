@@ -1,17 +1,14 @@
 -- migrate:up
 CREATE TABLE public.rooms (
-    id UUID NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL,
-    hotel_id UUID NOT NULL,
-    room_type_id UUID NOT NULL,
+    id UUID NOT NULL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    hotel_id UUID NOT NULL REFERENCES hotels(id),
+    room_type_id UUID NOT NULL REFERENCES room_types(id),
     floor INTEGER NOT NULL,
     number INTEGER NOT NULL,
     name VARCHAR(128) NOT NULL,
-    status VARCHAR(32) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (hotel_id) REFERENCES hotels(id)
-    FOREIGN KEY (room_type_id) REFERENCES room_types(id)
+    status VARCHAR(32) NOT NULL
 )
 
 -- migrate:down

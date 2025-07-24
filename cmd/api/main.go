@@ -4,6 +4,7 @@ import (
 	"hotel-service/config"
 	"hotel-service/internal/hotel"
 	"hotel-service/internal/room"
+	"hotel-service/internal/roomtype"
 	"hotel-service/pkg/db"
 	"hotel-service/pkg/logger"
 	"hotel-service/pkg/server/rest"
@@ -36,14 +37,17 @@ func main() {
 
 	// Setup Repositories
 	roomRepository := room.NewRepository(database)
+	roomTypeRepository := roomtype.NewRepository(database)
 	hotelRepository := hotel.NewRepository(database)
 
 	// Setup Services
 	hotelService := hotel.NewService(hotelRepository)
-	roomService := room.NewService(roomRepository, hotelService)
+	roomTypeService := roomtype.NewService(roomTypeRepository, hotelService)
+	roomService := room.NewService(roomRepository, hotelService, roomTypeService)
 
 	// Initialize Controllers
 	hotel.NewController(httpServer, validatorInstance, hotelService)
+	roomtype.NewController(httpServer, validatorInstance, roomTypeService)
 	room.NewController(httpServer, validatorInstance, roomService)
 
 	httpServer.Start()

@@ -6,32 +6,32 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
-// --------------------
-// DTOS models
-// --------------------
 type CreateHotelRequest struct {
-	Name    string `json:"name"`
-	Address string `json:"address"`
-	Country string `json:"country"`
-	State   string `json:"state"`
-	Status  string `json:"status"`
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	Country     string `json:"country"`
+	State       string `json:"state"`
+	Status      string `json:"status"`
+	Description string `json:"description"`
 }
 
 type UpdateHotelRequest struct {
-	Name    *string `json:"name"`
-	Address *string `json:"address"`
-	Status  *string `json:"status"`
+	Name        *string `json:"name"`
+	Address     *string `json:"address"`
+	Status      *string `json:"status"`
+	Description *string `json:"description"`
 }
 
 type HotelResponse struct {
-	ID        uuid.UUID `json:"id"`
-	CreatedAt string    `json:"created_at"`
-	UpdatedAt string    `json:"updated_at"`
-	Name      string    `json:"name"`
-	Address   string    `json:"address"`
-	Country   string    `json:"country"`
-	State     string    `json:"state"`
-	Status    string    `json:"status"`
+	ID          uuid.UUID `json:"id"`
+	CreatedAt   string    `json:"created_at"`
+	UpdatedAt   string    `json:"updated_at"`
+	Name        string    `json:"name"`
+	Address     string    `json:"address"`
+	Country     string    `json:"country"`
+	State       string    `json:"state"`
+	Status      string    `json:"status"`
+	Description string    `json:"description"`
 }
 
 type ListHotelsResponse struct {
@@ -40,14 +40,15 @@ type ListHotelsResponse struct {
 
 func NewHotelResponse(hotel *Hotel) HotelResponse {
 	return HotelResponse{
-		ID:        hotel.ID,
-		CreatedAt: hotel.CreatedAt.Format(time.RFC3339),
-		UpdatedAt: hotel.UpdatedAt.Format(time.RFC3339),
-		Name:      hotel.Name,
-		Address:   hotel.Address,
-		Country:   hotel.Country,
-		State:     hotel.State,
-		Status:    hotel.Status,
+		ID:          hotel.ID,
+		CreatedAt:   hotel.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:   hotel.UpdatedAt.Format(time.RFC3339),
+		Name:        hotel.Name,
+		Address:     hotel.Address,
+		Country:     hotel.Country,
+		State:       hotel.State,
+		Status:      hotel.Status,
+		Description: hotel.Description,
 	}
 }
 
