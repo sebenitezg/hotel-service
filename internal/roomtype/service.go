@@ -2,8 +2,9 @@ package roomtype
 
 import (
 	"errors"
-	"hotel-service/internal/core"
-	"hotel-service/pkg/logger"
+
+	"github.com/sebenitezg/hotel-service/internal/core"
+	"github.com/sebenitezg/hotel-service/pkg/logger"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/shopspring/decimal"
@@ -119,13 +120,24 @@ func (s *RoomTypeService) UpdatePartiallyRoomType(
 		return nil, errors.New("hotel does not have the room with the provided ID")
 	}
 
-	if name != nil { roomType.Name = *name }
-	if description != nil { roomType.Description = *description }
-	if numberOfBeds != nil { roomType.NumberOfBeds = *numberOfBeds }
-	if bedType != nil { roomType.BedType = *bedType }
-	if maxOccupancy != nil { roomType.MaxOccupancy = *maxOccupancy }
-	if basePrice != nil { roomType.BasePrice = *basePrice }
-
+	if name != nil {
+		roomType.Name = *name
+	}
+	if description != nil {
+		roomType.Description = *description
+	}
+	if numberOfBeds != nil {
+		roomType.NumberOfBeds = *numberOfBeds
+	}
+	if bedType != nil {
+		roomType.BedType = *bedType
+	}
+	if maxOccupancy != nil {
+		roomType.MaxOccupancy = *maxOccupancy
+	}
+	if basePrice != nil {
+		roomType.BasePrice = *basePrice
+	}
 
 	err = s.roomTypeRepo.Update(roomType)
 	if err != nil {

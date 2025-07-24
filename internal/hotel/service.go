@@ -2,7 +2,8 @@ package hotel
 
 import (
 	"errors"
-	"hotel-service/pkg/logger"
+
+	"github.com/sebenitezg/hotel-service/pkg/logger"
 
 	"github.com/gofrs/uuid/v5"
 	"go.uber.org/zap"
@@ -76,10 +77,18 @@ func (s *HotelService) UpdatePartiallyHotel(
 		return nil, ErrHotelNotFound
 	}
 
-	if name != nil { hotel.Name = *name }
-	if address != nil { hotel.Address = *address }
-	if status != nil { hotel.Status = *status }
-	if description != nil { hotel.Status = *description }
+	if name != nil {
+		hotel.Name = *name
+	}
+	if address != nil {
+		hotel.Address = *address
+	}
+	if status != nil {
+		hotel.Status = *status
+	}
+	if description != nil {
+		hotel.Status = *description
+	}
 
 	if err := s.hotelRepo.Update(hotel); err != nil {
 		s.log.Errorf("failed updating hotel information", "error", err)

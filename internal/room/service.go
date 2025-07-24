@@ -2,8 +2,9 @@ package room
 
 import (
 	"errors"
-	"hotel-service/internal/core"
-	"hotel-service/pkg/logger"
+
+	"github.com/sebenitezg/hotel-service/internal/core"
+	"github.com/sebenitezg/hotel-service/pkg/logger"
 
 	"github.com/gofrs/uuid/v5"
 	"go.uber.org/zap"
