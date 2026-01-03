@@ -38,13 +38,14 @@ func NewController(
 		r.Get("/v1/hotels/{hotel_id}/rooms/{room_id}", c.handleGetHotelRoom)
 		r.Post("/v1/hotels/{hotel_id}/rooms", c.handleCreateHotelRoom)
 		r.Put("/v1/hotels/{hotel_id}/rooms/{room_id}", c.handlePartialUpdateHotelRoom)
-		r.Delete("/v1/hotels/{hotel_id}/rooms/{room_id}", c.handleDeleteHotelRoom)
 	})
 
 	return c
 }
 
 func (c *RoomController) handleListHotelRooms(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -64,6 +65,8 @@ func (c *RoomController) handleListHotelRooms(w http.ResponseWriter, r *http.Req
 }
 
 func (c *RoomController) handleGetHotelRoom(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -90,6 +93,8 @@ func (c *RoomController) handleGetHotelRoom(w http.ResponseWriter, r *http.Reque
 }
 
 func (c *RoomController) handleCreateHotelRoom(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -135,6 +140,8 @@ func (c *RoomController) handleCreateHotelRoom(w http.ResponseWriter, r *http.Re
 }
 
 func (c *RoomController) handlePartialUpdateHotelRoom(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -179,8 +186,4 @@ func (c *RoomController) handlePartialUpdateHotelRoom(w http.ResponseWriter, r *
 	resp := NewRoomResponse(hotel)
 
 	rest.RenderJSON(r.Context(), w, http.StatusOK, resp)
-}
-
-func (c *RoomController) handleDeleteHotelRoom(w http.ResponseWriter, r *http.Request) {
-
 }

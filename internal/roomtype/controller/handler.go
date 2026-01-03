@@ -37,13 +37,14 @@ func NewController(
 		r.Get("/v1/hotels/{hotel_id}/roomtypes/{room_type_id}", c.handleGetHotelRoomType)
 		r.Post("/v1/hotels/{hotel_id}/roomtypes", c.handleCreateHotelRoomType)
 		r.Patch("/v1/hotels/{hotel_id}/roomtypes/{room_type_id}", c.handlePartialUpdateHotelRoomType)
-		r.Delete("/v1/hotels/{hotel_id}/roomtypes/{room_type_id}", c.handleDeleteHotelRoomType)
 	})
 
 	return c
 }
 
 func (c *RoomTypeController) handleListHotelRoomTypes(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -63,6 +64,8 @@ func (c *RoomTypeController) handleListHotelRoomTypes(w http.ResponseWriter, r *
 }
 
 func (c *RoomTypeController) handleGetHotelRoomType(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -89,6 +92,8 @@ func (c *RoomTypeController) handleGetHotelRoomType(w http.ResponseWriter, r *ht
 }
 
 func (c *RoomTypeController) handleCreateHotelRoomType(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -135,6 +140,8 @@ func (c *RoomTypeController) handleCreateHotelRoomType(w http.ResponseWriter, r 
 }
 
 func (c *RoomTypeController) handlePartialUpdateHotelRoomType(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	hotelID := chi.URLParam(r, "hotel_id")
 	uuidHotelID, err := uuid.FromString(hotelID)
 	if err != nil {
@@ -180,8 +187,4 @@ func (c *RoomTypeController) handlePartialUpdateHotelRoomType(w http.ResponseWri
 	resp := NewRoomTypeResponse(hotel)
 
 	rest.RenderJSON(r.Context(), w, http.StatusOK, resp)
-}
-
-func (c *RoomTypeController) handleDeleteHotelRoomType(w http.ResponseWriter, r *http.Request) {
-
 }

@@ -39,13 +39,14 @@ func NewController(
 		r.Get("/v1/hotels/", c.handleListHotels)
 		r.Post("/v1/hotels/", c.handleCreateHotel)
 		r.Patch("/v1/hotels/{hotel_id}", c.handlePartialUpdateHotel)
-		r.Delete("/v1/hotels/{hotel_id}", c.handleDeleteHotel)
 	})
 
 	return c
 }
 
 func (c *HotelController) handleListHotels(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
 	hotels, err := c.hotelService.ListHotels()
 	if err != nil {
 		rest.RenderError(r.Context(), w, err)
@@ -56,6 +57,8 @@ func (c *HotelController) handleListHotels(w http.ResponseWriter, r *http.Reques
 }
 
 func (c *HotelController) handleGetHotel(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
 	id := chi.URLParam(r, "hotel_id")
 	uuidID, err := uuid.FromString(id)
 	if err != nil {
@@ -76,6 +79,8 @@ func (c *HotelController) handleGetHotel(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	var payload models.CreateHotelRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		c.log.Errorw("failed to decode request body", "error", err)
@@ -114,6 +119,8 @@ func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Reque
 }
 
 func (c *HotelController) handlePartialUpdateHotel(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	id := chi.URLParam(r, "hotel_id")
 	uuidID, err := uuid.FromString(id)
 	if err != nil {
@@ -142,9 +149,5 @@ func (c *HotelController) handlePartialUpdateHotel(w http.ResponseWriter, r *htt
 	resp := models.NewHotelResponse(hotel)
 
 	rest.RenderJSON(r.Context(), w, http.StatusAccepted, resp)
-
-}
-
-func (c *HotelController) handleDeleteHotel(w http.ResponseWriter, r *http.Request) {
 
 }
