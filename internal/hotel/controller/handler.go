@@ -7,6 +7,8 @@ import (
 
 	"github.com/sebenitezg/hotel-service/pkg/logger"
 	"github.com/sebenitezg/hotel-service/pkg/server/rest"
+	"github.com/sebenitezg/hotel-service/internal/hotel/application"
+	"github.com/sebenitezg/hotel-service/internal/hotel/models"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
@@ -14,16 +16,17 @@ import (
 	"go.uber.org/zap"
 )
 
+
 type HotelController struct {
 	validator    *validator.Validate
-	hotelService *HotelService
+	hotelService *application.HotelService
 	log          *zap.SugaredLogger
 }
 
 func NewController(
 	server *rest.HTTPServer,
 	validator *validator.Validate,
-	hotelService *HotelService,
+	hotelService *application.HotelService,
 ) *HotelController {
 	c := &HotelController{
 		validator:    validator,
@@ -47,7 +50,7 @@ func (c *HotelController) handleListHotels(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		rest.RenderError(r.Context(), w, err)
 	}
-	resp := NewListHotelsResponse(hotels)
+	resp := models.NewListHotelsResponse(hotels)
 
 	rest.RenderJSON(r.Context(), w, http.StatusOK, resp)
 }
@@ -64,15 +67,16 @@ func (c *HotelController) handleGetHotel(w http.ResponseWriter, r *http.Request)
 	hotel, err := c.hotelService.GetHotelByID(uuidID)
 	if err != nil {
 		rest.RenderError(r.Context(), w, err)
+		return
 	}
 
-	resp := NewHotelResponse(hotel)
+	resp := models.NewHotelResponse(hotel)
 
 	rest.RenderJSON(r.Context(), w, http.StatusOK, resp)
 }
 
 func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Request) {
-	var payload CreateHotelRequest
+	var payload models.CreateHotelRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		c.log.Errorw("failed to decode request body", "error", err)
 		rest.RenderError(r.Context(), w, err)
@@ -84,7 +88,7 @@ func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	hotel, err := NewHotel(
+	hotel, err := models.NewHotel(
 		payload.Name,
 		payload.Address,
 		payload.Country,
@@ -104,7 +108,7 @@ func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	resp := NewHotelResponse(hotel)
+	resp := models.NewHotelResponse(hotel)
 
 	rest.RenderJSON(r.Context(), w, http.StatusCreated, resp)
 }
@@ -118,7 +122,7 @@ func (c *HotelController) handlePartialUpdateHotel(w http.ResponseWriter, r *htt
 		return
 	}
 
-	var payload UpdateHotelRequest
+	var payload models.UpdateHotelRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		c.log.Errorw("failed to decode request body", "error", err)
 		rest.RenderError(r.Context(), w, err)
@@ -135,7 +139,7 @@ func (c *HotelController) handlePartialUpdateHotel(w http.ResponseWriter, r *htt
 		rest.RenderError(r.Context(), w, err)
 	}
 
-	resp := NewHotelResponse(hotel)
+	resp := models.NewHotelResponse(hotel)
 
 	rest.RenderJSON(r.Context(), w, http.StatusAccepted, resp)
 

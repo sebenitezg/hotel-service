@@ -1,4 +1,4 @@
-package hotel
+package models
 
 import (
 	"time"

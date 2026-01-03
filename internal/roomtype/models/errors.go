@@ -1,4 +1,4 @@
-package roomtype
+package models
 
 import "errors"
 

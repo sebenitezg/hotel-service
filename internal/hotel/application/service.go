@@ -1,21 +1,22 @@
-package hotel
+package application
 
 import (
 	"errors"
 
 	"github.com/sebenitezg/hotel-service/pkg/logger"
-
+	"github.com/sebenitezg/hotel-service/internal/hotel/repository"
+	"github.com/sebenitezg/hotel-service/internal/hotel/models"
 	"github.com/gofrs/uuid/v5"
 	"go.uber.org/zap"
 )
 
 type HotelService struct {
-	hotelRepo *HotelRepository
+	hotelRepo *repository.HotelRepository
 	log       *zap.SugaredLogger
 }
 
 func NewService(
-	hotelRepo *HotelRepository,
+	hotelRepo *repository.HotelRepository,
 ) *HotelService {
 	return &HotelService{
 		hotelRepo: hotelRepo,
@@ -23,30 +24,35 @@ func NewService(
 	}
 }
 
-func (s *HotelService) ListHotels() (Hotels, error) {
+func (s *HotelService) ListHotels() (models.Hotels, error) {
 	s.log.Infof("fetching all hotels")
 
 	hotels, err := s.hotelRepo.GetAll()
 	if err != nil {
 		s.log.Errorw("error getting hotels information", "error", err)
-		return Hotels{}, err
+		return models.Hotels{}, err
 	}
 
 	return hotels, nil
 }
 
-func (s *HotelService) GetHotelByID(id uuid.UUID) (*Hotel, error) {
+func (s *HotelService) GetHotelByID(id uuid.UUID) (*models.Hotel, error) {
 	s.log.Infof("fetching hotel by id: %s", id)
 
 	hotel, err := s.hotelRepo.GetByID(id)
 	if err != nil {
+		s.log.Errorw("error fetching hotel by ID", "hotelID", id, "reason", err)
 		return nil, errors.New("unexpected error fetching hotel")
+	}
+	if hotel == nil {
+		s.log.Errorw("hotel not found", "hotelID", id)
+		return nil, models.ErrHotelNotFound
 	}
 
 	return hotel, nil
 }
 
-func (s *HotelService) CreateHotel(hotel *Hotel) (*Hotel, error) {
+func (s *HotelService) CreateHotel(hotel *models.Hotel) (*models.Hotel, error) {
 	s.log.Infof("creating a new hotel: %s", hotel.Name)
 
 	if err := s.hotelRepo.Save(hotel); err != nil {
@@ -64,7 +70,7 @@ func (s *HotelService) UpdatePartiallyHotel(
 	address *string,
 	status *string,
 	description *string,
-) (*Hotel, error) {
+) (*models.Hotel, error) {
 	s.log.Infof("updating hotel instance with id: %v", id)
 
 	hotel, err := s.hotelRepo.GetByID(id)
@@ -74,7 +80,7 @@ func (s *HotelService) UpdatePartiallyHotel(
 
 	if hotel == nil {
 		s.log.Infof("hotel not found: %v", id)
-		return nil, ErrHotelNotFound
+		return nil, models.ErrHotelNotFound
 	}
 
 	if name != nil {

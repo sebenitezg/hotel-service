@@ -7,6 +7,8 @@ import (
 
 	"github.com/sebenitezg/hotel-service/pkg/logger"
 	"github.com/sebenitezg/hotel-service/pkg/server/rest"
+	"github.com/sebenitezg/hotel-service/internal/room/application"
+	. "github.com/sebenitezg/hotel-service/internal/room/models"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
@@ -16,14 +18,14 @@ import (
 
 type RoomController struct {
 	validator   *validator.Validate
-	roomService *RoomService
+	roomService *application.RoomService
 	log         *zap.SugaredLogger
 }
 
 func NewController(
 	server *rest.HTTPServer,
 	validator *validator.Validate,
-	roomService *RoomService,
+	roomService *application.RoomService,
 ) *RoomController {
 	c := &RoomController{
 		validator:   validator,

@@ -2,9 +2,16 @@ package main
 
 import (
 	"github.com/sebenitezg/hotel-service/config"
-	"github.com/sebenitezg/hotel-service/internal/hotel"
-	"github.com/sebenitezg/hotel-service/internal/room"
-	"github.com/sebenitezg/hotel-service/internal/roomtype"
+	hotelRepo "github.com/sebenitezg/hotel-service/internal/hotel/repository"
+	roomRepo "github.com/sebenitezg/hotel-service/internal/room/repository"
+	roomTypeRepo "github.com/sebenitezg/hotel-service/internal/roomtype/repository"
+	hotelSrv "github.com/sebenitezg/hotel-service/internal/hotel/application"
+	roomSrv "github.com/sebenitezg/hotel-service/internal/room/application"
+	roomTypeSrv "github.com/sebenitezg/hotel-service/internal/roomtype/application"
+	hotelCtrl "github.com/sebenitezg/hotel-service/internal/hotel/controller"
+	roomCtrl "github.com/sebenitezg/hotel-service/internal/room/controller"
+	roomTypeCtrl "github.com/sebenitezg/hotel-service/internal/roomtype/controller"
+	
 	"github.com/sebenitezg/hotel-service/pkg/db"
 	"github.com/sebenitezg/hotel-service/pkg/logger"
 	"github.com/sebenitezg/hotel-service/pkg/server/rest"
@@ -36,19 +43,19 @@ func main() {
 	httpServer := rest.NewHTTPServer(configs.Server)
 
 	// Setup Repositories
-	roomRepository := room.NewRepository(database)
-	roomTypeRepository := roomtype.NewRepository(database)
-	hotelRepository := hotel.NewRepository(database)
+	roomRepository := roomRepo.NewRepository(database)
+	roomTypeRepository := roomTypeRepo.NewRepository(database)
+	hotelRepository := hotelRepo.NewRepository(database)
 
 	// Setup Services
-	hotelService := hotel.NewService(hotelRepository)
-	roomTypeService := roomtype.NewService(roomTypeRepository, hotelService)
-	roomService := room.NewService(roomRepository, hotelService, roomTypeService)
+	hotelService := hotelSrv.NewService(hotelRepository)
+	roomTypeService := roomTypeSrv.NewService(roomTypeRepository, hotelService)
+	roomService := roomSrv.NewService(roomRepository, hotelService, roomTypeService)
 
 	// Initialize Controllers
-	hotel.NewController(httpServer, validatorInstance, hotelService)
-	roomtype.NewController(httpServer, validatorInstance, roomTypeService)
-	room.NewController(httpServer, validatorInstance, roomService)
+	hotelCtrl.NewController(httpServer, validatorInstance, hotelService)
+	roomTypeCtrl.NewController(httpServer, validatorInstance, roomTypeService)
+	roomCtrl.NewController(httpServer, validatorInstance, roomService)
 
 	httpServer.Start()
 }

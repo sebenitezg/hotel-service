@@ -1,9 +1,11 @@
-package roomtype
+package application
 
 import (
 	"errors"
 
-	"github.com/sebenitezg/hotel-service/internal/core"
+	hotelInterfaces "github.com/sebenitezg/hotel-service/internal/hotel/interfaces"
+	"github.com/sebenitezg/hotel-service/internal/roomtype/repository"
+	. "github.com/sebenitezg/hotel-service/internal/roomtype/models"
 	"github.com/sebenitezg/hotel-service/pkg/logger"
 
 	"github.com/gofrs/uuid/v5"
@@ -12,14 +14,14 @@ import (
 )
 
 type RoomTypeService struct {
-	roomTypeRepo   *RoomTypeRepository
-	hotelValidator core.HotelValidator
+	roomTypeRepo   *repository.RoomTypeRepository
+	hotelValidator hotelInterfaces.HotelValidator
 	log            *zap.SugaredLogger
 }
 
 func NewService(
-	roomTypeRepo *RoomTypeRepository,
-	hotelValidator core.HotelValidator,
+	roomTypeRepo *repository.RoomTypeRepository,
+	hotelValidator hotelInterfaces.HotelValidator,
 ) *RoomTypeService {
 	return &RoomTypeService{
 		roomTypeRepo:   roomTypeRepo,

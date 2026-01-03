@@ -1,4 +1,4 @@
-package roomtype
+package controller
 
 import (
 	"encoding/json"
@@ -7,7 +7,8 @@ import (
 
 	"github.com/sebenitezg/hotel-service/pkg/logger"
 	"github.com/sebenitezg/hotel-service/pkg/server/rest"
-
+	. "github.com/sebenitezg/hotel-service/internal/roomtype/application"
+	. "github.com/sebenitezg/hotel-service/internal/roomtype/models"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofrs/uuid/v5"

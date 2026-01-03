@@ -37,7 +37,7 @@ func RenderError(ctx context.Context, w http.ResponseWriter, err error) {
 	// Check if the error is a terrors.Error
 	var terror *terrors.Error
 	if !errors.As(err, &terror) {
-		terror = terrors.InternalService("", "something went wrong, please try again later", nil)
+		terror = terrors.InternalService("", message, nil)
 	}
 
 	parsedCode := strings.Split(terror.Code, ".")

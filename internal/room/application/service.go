@@ -1,26 +1,29 @@
-package room
+package application
 
 import (
 	"errors"
 
-	"github.com/sebenitezg/hotel-service/internal/core"
+	hotelInterfaces "github.com/sebenitezg/hotel-service/internal/hotel/interfaces"
+	roomTypeInterfaces "github.com/sebenitezg/hotel-service/internal/roomtype/interfaces"
 	"github.com/sebenitezg/hotel-service/pkg/logger"
+	"github.com/sebenitezg/hotel-service/internal/room/repository"
+	"github.com/sebenitezg/hotel-service/internal/room/models"
 
 	"github.com/gofrs/uuid/v5"
 	"go.uber.org/zap"
 )
 
 type RoomService struct {
-	roomRepo          *RoomRepository
-	hotelValidator    core.HotelValidator
-	roomTypeValidator core.RoomTypeValidator
+	roomRepo          *repository.RoomRepository
+	hotelValidator    hotelInterfaces.HotelValidator
+	roomTypeValidator roomTypeInterfaces.RoomTypeValidator
 	log               *zap.SugaredLogger
 }
 
 func NewService(
-	roomRepo *RoomRepository,
-	hotelValidator core.HotelValidator,
-	roomTypeValidator core.RoomTypeValidator,
+	roomRepo *repository.RoomRepository,
+	hotelValidator hotelInterfaces.HotelValidator,
+	roomTypeValidator roomTypeInterfaces.RoomTypeValidator,
 ) *RoomService {
 	return &RoomService{
 		roomRepo:          roomRepo,
@@ -30,7 +33,7 @@ func NewService(
 	}
 }
 
-func (s *RoomService) ListRoomsByHotelID(hotelID uuid.UUID) (Rooms, error) {
+func (s *RoomService) ListRoomsByHotelID(hotelID uuid.UUID) (models.Rooms, error) {
 	rooms, err := s.roomRepo.GetByHotelID(hotelID)
 	if err != nil {
 		s.log.Errorw("error retrieving rooms by hotel ID", "hotelID", hotelID, "error", err)
@@ -41,7 +44,7 @@ func (s *RoomService) ListRoomsByHotelID(hotelID uuid.UUID) (Rooms, error) {
 
 func (s *RoomService) RetrieveRoomByHotelRoomID(
 	hotelID uuid.UUID, roomID uuid.UUID,
-) (*Room, error) {
+) (*models.Room, error) {
 	room, err := s.roomRepo.GetByID(roomID)
 	if err != nil {
 		return nil, err
@@ -58,7 +61,7 @@ func (s *RoomService) RetrieveRoomByHotelRoomID(
 	return room, nil
 }
 
-func (s *RoomService) CreateRoom(r *Room) (*Room, error) {
+func (s *RoomService) CreateRoom(r *models.Room) (*models.Room, error) {
 
 	hotelExist, err := s.hotelValidator.ValidateHotelExists(r.HotelID)
 	if err != nil {
@@ -101,7 +104,7 @@ func (s *RoomService) UpdatePartiallyRoom(
 	number *int,
 	name *string,
 	status *string,
-) (*Room, error) {
+) (*models.Room, error) {
 
 	room, err := s.roomRepo.GetByID(roomID)
 	if err != nil {
