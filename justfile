@@ -46,6 +46,12 @@ update:
     go get -u ./...
     just tidy
 
+test:
+    - just db-test-up
+    - just db-test-migrate
+    - go test -v ./...
+    - just db-test-down
+
 ##########
 # dbmate
 ##########
@@ -53,11 +59,13 @@ main_db_migrations := "resources/db/migrations"
 main_db_schema := "resources/db/schema.sql"
 
 db action:
-    dbmate -u postgres://developer:secretpassword@localhost:5431/hotel_service?sslmode=disable -d {{main_db_migrations}} -s {{main_db_schema}} {{action}}
+    dbmate -u postgres://developer:secretpassword@localhost:5432/hotel_service?sslmode=disable -d {{main_db_migrations}} -s {{main_db_schema}} {{action}}
 
 new-migration name:
     dbmate -d {{ main_db_migrations }} new {{ name }}
 
+db-test-migrate:
+    dbmate -u postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable -d {{main_db_migrations}} -s {{main_db_schema}} up
 
 ##########################
 # Infrastructure setup
@@ -66,3 +74,14 @@ db-setup:
     chmod u+x deployments/postgres.sh
     ./deployments/postgres.sh
 
+db-test-up:
+    docker container run --name test-postgres \
+        -e POSTGRES_PASSWORD=postgres \
+        -e POSTGRES_USER=postgres \
+        -e POSTGRES_DB=postgres \
+        -p 5432:5432 \
+        -d postgres:17.5
+    sleep 2
+
+db-test-down:
+    docker container stop test-postgres && docker container rm test-postgres

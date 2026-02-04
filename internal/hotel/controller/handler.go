@@ -5,17 +5,16 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/sebenitezg/hotel-service/pkg/logger"
-	"github.com/sebenitezg/hotel-service/pkg/server/rest"
 	"github.com/sebenitezg/hotel-service/internal/hotel/application"
 	"github.com/sebenitezg/hotel-service/internal/hotel/models"
+	"github.com/sebenitezg/hotel-service/pkg/logger"
+	"github.com/sebenitezg/hotel-service/pkg/server/rest"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofrs/uuid/v5"
 	"go.uber.org/zap"
 )
-
 
 type HotelController struct {
 	validator    *validator.Validate
@@ -80,7 +79,7 @@ func (c *HotelController) handleGetHotel(w http.ResponseWriter, r *http.Request)
 
 func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	
+
 	var payload models.CreateHotelRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		c.log.Errorw("failed to decode request body", "error", err)
@@ -120,7 +119,7 @@ func (c *HotelController) handleCreateHotel(w http.ResponseWriter, r *http.Reque
 
 func (c *HotelController) handlePartialUpdateHotel(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	
+
 	id := chi.URLParam(r, "hotel_id")
 	uuidID, err := uuid.FromString(id)
 	if err != nil {
